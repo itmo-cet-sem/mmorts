@@ -28,6 +28,10 @@ public static class Connector
 
     public static void ConnectToServer()
     {
+        if (IsConnected)
+        {
+            CloseConnection();
+        }
         try
         {
             IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse(serverAddress), port);
