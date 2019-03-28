@@ -6,6 +6,6 @@ namespace GameLogic
 {
     static public class GameManager
     {
-        static Connector serverConnection;
+        
     }
 }
