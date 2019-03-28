@@ -550,4 +550,6 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
+!MMORTS-Client/Assets/Plugins/*.dll
+
 # End of https://www.gitignore.io/api/c++,unity,python,visualstudio,visualstudiocode
