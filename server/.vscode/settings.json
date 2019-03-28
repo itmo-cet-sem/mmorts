@@ -1,0 +1,23 @@
+{
+    // General
+    "python.pythonPath": ".venv\\Scripts\\python.exe",
+
+    // Linting
+    "[python]": {
+        "editor.rulers": [
+            79, // docstrings
+            99, // code
+        ]
+    },
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=99",
+        "--max-doc-length=79",
+    ],
+
+    // Unit tests
+    "python.unitTest.unittestEnabled": false,
+    "python.unitTest.pyTestEnabled": true,
+    "python.unitTest.nosetestsEnabled": false,
+}
