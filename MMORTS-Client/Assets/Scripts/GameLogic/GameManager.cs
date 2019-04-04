@@ -6,6 +6,9 @@ namespace GameLogic
 {
     static public class GameManager
     {
-        
+        public static Player CurrentPlayer;
+        public static List<Player> Players;
+        public static World CurrentWorld;
+        public static int LastState;
     }
 }
