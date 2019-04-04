@@ -33,6 +33,10 @@ public class UpdateUnitsOnMap : MonoBehaviour
                     units.Add(currentUnit.uID, Instantiate(type, currentUnit.UnitPosition, Quaternion.identity));
                     units[currentUnit.uID].GetComponent<UnitInfo>().ID = currentUnit.uID;
                 }
+                else
+                {
+                    units[currentUnit.uID].transform.position = currentUnit.UnitPosition;
+                }
             }
         }
     }

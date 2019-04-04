@@ -15,7 +15,7 @@ public class InfoUpdater : MonoBehaviour
     void Update()
     {
         time += Time.deltaTime;
-        if (time > 0.5f)
+        if (time > 0.2f)
         {
             time = 0;
             StartCoroutine("updateInfo");
