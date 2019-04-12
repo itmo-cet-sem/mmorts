@@ -15,11 +15,21 @@ public class InfoUpdater : MonoBehaviour
     void Update()
     {
         time += Time.deltaTime;
-        if (time > 0.2f)
+        if (Connector.IsConnected)
         {
-            time = 0;
-            StartCoroutine("updateInfo");
-            Camera.main.GetComponent<UpdateUnitsOnMap>().UpdateUnits();
+            if (time > 0.2f)
+            {
+                time = 0;
+                StartCoroutine("updateInfo");
+                Camera.main.GetComponent<UpdateUnitsOnMap>().UpdateUnits();
+            }
+        }
+        else
+        {
+            if (time > 30f)
+            {
+                Connector.ConnectToServer();
+            }
         }
     }
     IEnumerator updateInfo()
