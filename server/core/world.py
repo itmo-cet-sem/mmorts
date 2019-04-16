@@ -99,5 +99,5 @@ class World:
                 continue
             direction = (unit.destination - unit.position).norm()
             unit.position += direction
-            if abs(direction) < 1:
+            if abs(direction) < 1e-4:
                 unit.destination = None
