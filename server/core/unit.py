@@ -10,7 +10,7 @@ class UnitType:
 
 
 class Unit:
-    def __init__(self, uid, unit_type, player, position):
+    def __init__(self, uid, player, unit_type, position):
         self.uid = uid
         self.type = unit_type
         self.player = player
