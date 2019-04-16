@@ -24,6 +24,9 @@ class Core:
     def is_alive(self):
         return self.world.run_server
 
+    def threads_status(self):
+        return {x.name: x.is_alive() for x in self.world.threads}
+
     def check_player(self, player_name):
         if player_name == '':
             return f'Player name cannot be empty'

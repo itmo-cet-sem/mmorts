@@ -47,6 +47,9 @@ def handle_request(addr, request, player_name, core):
             elif cmd == 'help':
                 response = COMMANDS
 
+            elif cmd == 'server_status':
+                response = {'server': core.is_alive(), **core.threads_status()}
+
             elif cmd == 'login':
                 player_name = request['player_name']
                 core.add_player(player_name)
