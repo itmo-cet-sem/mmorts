@@ -17,7 +17,7 @@ public class InfoUpdater : MonoBehaviour
         time += Time.deltaTime;
         if (Connector.IsConnected)
         {
-            if (time > 0.2f)
+            if (time > 0.02f)
             {
                 time = 0;
                 StartCoroutine("updateInfo");

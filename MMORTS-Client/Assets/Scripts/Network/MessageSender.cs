@@ -27,7 +27,7 @@ public static class MessageSender
 
     public static void SendMoveMessage(int uid)
     {
-        Connector.SendMessage(MessageBuilder.MoveMessage(uid, GameManager.CurrentWorld.Units[uid].Destanation));
+        Connector.SendMessage(MessageBuilder.MoveMessage(uid, GameManager.CurrentWorld.Units[uid].Destination));
     }
     public static void StartingGetUnitInfo()
     {
@@ -50,136 +50,57 @@ public static class MessageSender
 
     private static void updateUnits(object unitsDict)
     {
-        if (GameManager.LastState != unitsDict.GetHashCode())
+        MapCommand mapInfo = new MapCommand();
+        bool isSuccess = mapInfo.ProccessCommand(unitsDict);
+
+        if (isSuccess)
         {
-            GameManager.LastState = unitsDict.GetHashCode();
-            Dictionary<string, object> rawInfo = new Dictionary<string, object>();
-            try
+            if (mapInfo.PlayerNames.Count != GameManager.Players.Count)
             {
-                rawInfo = JsonConvert.DeserializeObject<Dictionary<string, object>>(unitsDict.ToString());
+                createPlayers(mapInfo.PlayerNames.ToArray());
             }
-            catch (Exception ex)
+            GameManager.CurrentWorld.Units.Clear();
+            for (int i=0;i< mapInfo.UnitsAttributes.Count;i++)
             {
-                Debug.Log(ex.Message);
-                return;
-            }
-
-            List<string> playerNames = new List<string>();
-            try
-            {
-                playerNames = JsonConvert.DeserializeObject<List<string>>(rawInfo["player_names"].ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.Log(ex.Message);
-                return;
-            }
-
-            if (playerNames.Count != GameManager.Players.Count)
-            {
-                createPlayers(playerNames.ToArray());
-            }
-
-            List<object> players = new List<object>();
-            try
-            {
-                players = JsonConvert.DeserializeObject<List<object>>(rawInfo["players"].ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.Log(ex.Message);
-                return;
-            }
-
-            GameManager.CurrentWorld.Units = new Dictionary<int, Unit>();
-
-            for (int i = 0; i < players.Count; i++)
-            {
-                Dictionary<string, object> units = new Dictionary<string, object>();
-                try
+                Unit tempUnit = new Unit();
+                if (mapInfo.UnitsAttributes[i].ContainsKey("ID"))
                 {
-                    units = JsonConvert.DeserializeObject<Dictionary<string, object>>(players[i].ToString());
+                    tempUnit.uID = (int)mapInfo.UnitsAttributes[i]["ID"];
                 }
-                catch (Exception ex)
+                if (mapInfo.UnitsAttributes[i].ContainsKey("Owner"))
                 {
-                    Debug.Log(ex.Message);
-                    return;
+                    tempUnit.Owner = GameManager.Players[(int)mapInfo.UnitsAttributes[i]["Owner"]];
                 }
-                for (int j = 0; j < units.Count; j++)
+                if (mapInfo.UnitsAttributes[i].ContainsKey("type"))
                 {
-                    Dictionary<string, object> unitsProperties = new Dictionary<string, object>();
-                    try
+                    switch (mapInfo.UnitsAttributes[i]["type"])
                     {
-                        unitsProperties = JsonConvert.DeserializeObject<Dictionary<string, object>>(units[j.ToString()].ToString());
+                        case "basic_circle":
+                            tempUnit.UnitType = UnitTypes.Circle;
+                            break;
+                        default:
+                            tempUnit.UnitType = UnitTypes.Square;
+                            break;
                     }
-                    catch (Exception ex)
-                    {
-                        Debug.Log(ex.Message);
-                        return;
-                    }
-                    Unit tempUnit = new Unit();
-                    tempUnit.Owner = GameManager.Players[i];
-                    if (unitsProperties.ContainsKey("uid"))
-                    {
-                        int id = 0;
-                        try
-                        {
-                            id = int.Parse(unitsProperties["uid"].ToString());
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.Log(ex.Message);
-                            return;
-                        }
-                        tempUnit.uID = id;
-                    }
-
-                    if (unitsProperties.ContainsKey("type"))
-                    {
-                        switch (unitsProperties["type"])
-                        {
-                            case "basic_circle":
-                                tempUnit.UnitType = UnitTypes.Circle;
-                                break;
-                            default:
-                                tempUnit.UnitType = UnitTypes.Square;
-                                break;
-                        }
-                    }
-
-                    if (unitsProperties.ContainsKey("position"))
-                    {
-                        List<float> coorditates = new List<float>();
-                        try
-                        {
-                            coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["position"].ToString());
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.Log(ex.Message);
-                            return;
-                        }
-                        tempUnit.UnitPosition = new Vector3(coorditates[1], coorditates[2], coorditates[0]);
-                    }
-                    if (unitsProperties.ContainsKey("destination"))
-                    {
-                        List<float> coorditates = new List<float>();
-                        try
-                        {
-                            coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["destination"].ToString());
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.Log(ex.Message);
-                            return;
-                        }
-                        tempUnit.Destanation = new Vector3(coorditates[1], coorditates[2], coorditates[0]);
-                    }
-                    GameManager.CurrentWorld.Units.Add(tempUnit.uID, tempUnit);
                 }
+                if (mapInfo.UnitsAttributes[i].ContainsKey("position"))
+                {
+                    tempUnit.UnitPosition = (Vector3)mapInfo.UnitsAttributes[i]["position"];
+                }
+                if (mapInfo.UnitsAttributes[i].ContainsKey("destination"))
+                {
+                    tempUnit.Destination = (Vector3)mapInfo.UnitsAttributes[i]["destination"];
+                }
+                else
+                {
+                    tempUnit.Destination = Vector3.negativeInfinity;
+                }
+                GameManager.CurrentWorld.Units.Add(tempUnit.uID, tempUnit);
             }
         }
+
     }
+
     private static void createPlayers(string[] names)
     {
         GameManager.Players.Clear();

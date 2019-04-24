@@ -8,6 +8,10 @@ public class GameControls : MonoBehaviour
 
     [SerializeField]
     GameObject selection;
+
+    [SerializeField]
+    GameObject destination;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +47,15 @@ public class GameControls : MonoBehaviour
                             selectedUnit = hit.collider.gameObject;
                             selection.transform.position = selectedUnit.transform.position;
                             selection.transform.SetParent(selectedUnit.transform);
+                            if (!GameLogic.GameManager.CurrentWorld.Units[uid].Destination.Equals(Vector3.negativeInfinity))
+                            {
+                                destination.transform.position = GameLogic.GameManager.CurrentWorld.Units[uid].Destination;
+                                destination.GetComponent<SpriteRenderer>().enabled = true;
+                            }
+                            else
+                            {
+                                destination.GetComponent<SpriteRenderer>().enabled = false;
+                            }
                         }
                     }
                 }
@@ -51,8 +64,10 @@ public class GameControls : MonoBehaviour
                     if (selectedUnit != null)
                     {
                         int uid = selectedUnit.GetComponent<UnitInfo>().ID;
-                        GameLogic.GameManager.CurrentWorld.Units[uid].Destanation = hit.point;
+                        GameLogic.GameManager.CurrentWorld.Units[uid].Destination = hit.point;
                         MessageSender.SendMoveMessage(selectedUnit.GetComponent<UnitInfo>().ID);
+                        destination.transform.position = GameLogic.GameManager.CurrentWorld.Units[uid].Destination;
+                        destination.GetComponent<SpriteRenderer>().enabled = true;
                     }
                 }
             }

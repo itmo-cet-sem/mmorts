@@ -11,6 +11,6 @@ namespace GameLogic
         public Player Owner { get; set; }
         public Vector3 UnitPosition { get; set; }
         public UnitTypes UnitType { get; set; }
-        public Vector3 Destanation { get; set; }
+        public Vector3 Destination { get; set; }
     }
 }
