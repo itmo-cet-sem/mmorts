@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using GameLogic;
+using UnityEngine.SceneManagement;
+using System;
 
 public class ButtonsProcessing : MonoBehaviour
 {
     [SerializeField]
-    InputField messageBox;
+    InputField loginBox;
 
     public void ExitGame()
     {
@@ -18,20 +19,25 @@ public class ButtonsProcessing : MonoBehaviour
         Application.Quit();
     }
 
-    public void ConnectToServer()
-    {
-        Connector.ConnectToServer();
-    }
-
-    public void SendMessage()
+    public void Login()
     {
         if (Connector.IsConnected)
         {
-            Connector.SendMessage(messageBox.text);
+            MessageSender.SendLoginMessage(loginBox.text);
+            GameLogic.GameManager.CurrentPlayer = new GameLogic.Player(loginBox.text);
         }
         else
         {
             Debug.Log("no connection");
+        }
+    }
+
+    private void Update()
+    {
+        if (MessageSender.goToGameplayScene)
+        {
+            SceneManager.LoadScene(1); // strange thing with bool
+            MessageSender.goToGameplayScene= false;
         }
     }
 }

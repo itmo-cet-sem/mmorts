@@ -75,10 +75,79 @@ public static class Connector
 
         StringBuilder builder = new StringBuilder();
         builder.Append(Encoding.UTF8.GetString(recData));
-        //Dictionary<string, System.Object> values = JsonConvert.DeserializeObject<Dictionary<string, System.Object>>(builder.ToString());
-        //List<string> values = JsonConvert.DeserializeObject<List<string>>(builder.ToString());
         Debug.Log("server answered: " + builder.ToString());
-        
+        processAnswer(builder.ToString());
+
         socket.BeginReceive(_recieveBuffer, 0, _recieveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
     }
+
+    private static void processAnswer(string answer)
+    {
+        Dictionary<string, object> answerD = new Dictionary<string, object>();
+        try
+        {
+            answerD = JsonConvert.DeserializeObject<Dictionary<string, object>>(answer);
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+            return;
+        }
+        if (answerD.ContainsKey("c"))
+        {
+            if (answerD.ContainsKey("e"))
+            {
+                Debug.Log(answerD["e"]);
+            }
+            else
+            {
+                if (answerD.ContainsKey("r"))
+                {
+                    switch (answerD["c"])
+                    {
+                        case "login":
+                            if (OnAnswerRecieve!=null)
+                            {
+                                OnAnswerRecieve((string)answerD["r"]);
+                            }
+                            break;
+                        case "map":
+                            if (OnUnitsUpdate!=null)
+                            {
+                                OnUnitsUpdate(answerD["r"]);
+                            }
+                            break;
+
+                        default:
+                            Debug.Log("Unrecognised command");
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (answerD["c"])
+                    {
+                        case "spawn_unit":
+                            break;
+                        default:
+                            Debug.Log("Not contains an answer");
+                            break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Not a command answer");
+        }
+        return;
+    }
+    public delegate void AnswerRecieved(string anwser);
+    public static event AnswerRecieved OnAnswerRecieve;
+
+    public delegate void UnitsUpdated(object anwser);
+    public static event UnitsUpdated OnUnitsUpdate;
+
+    public delegate void SuccessRecieved();
+    public static event SuccessRecieved OnSuccessRecieve;
 }
