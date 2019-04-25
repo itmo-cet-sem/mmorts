@@ -67,6 +67,10 @@ class Core:
             'players': []
         }
         for player in self.players.values():
-            units = {x.uid: x.to_dict() for x in player.units.values()}
+            is_private = player.name == player_name
+            units = {
+                x.uid: x.to_dict(private=is_private)
+                for x in player.units.values()
+            }
             result['players'].append(units)
         return result
