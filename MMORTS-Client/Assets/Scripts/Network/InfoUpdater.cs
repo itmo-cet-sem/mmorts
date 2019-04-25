@@ -29,6 +29,7 @@ public class InfoUpdater : MonoBehaviour
             if (time > 30f)
             {
                 Connector.ConnectToServer();
+                MessageSender.SendLoginMessage(GameLogic.GameManager.CurrentPlayer.Name);
             }
         }
     }

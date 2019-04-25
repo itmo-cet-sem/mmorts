@@ -57,6 +57,8 @@ public class MapCommand : Command
             return false;
         }
 
+        int startIndex = 0;
+
         //Third layer
         for (int i = 0; i < players.Count; i++)
         {
@@ -65,48 +67,52 @@ public class MapCommand : Command
             {
                 return false;
             }
-            for (int j = 0; j < units.Count; j++)
+            for (int j = startIndex; j < units.Count; j++)
             {
                 //Fourth layer
-                Dictionary<string, object> unitsProperties = JsonConvert.DeserializeObject<Dictionary<string, object>>(units[j.ToString()].ToString());
-                if (unitsProperties == null)
+                if (units.ContainsKey(j.ToString()))
                 {
-                    return false;
-                }
-                UnitsAttributes.Add(new Dictionary<string, object>());
-                UnitsAttributes[UnitsAttributes.Count - 1].Add("Owner", i);
-
-                if (unitsProperties.ContainsKey("uid"))
-                {
-                    int id = int.Parse(unitsProperties["uid"].ToString());
-                    UnitsAttributes[UnitsAttributes.Count - 1].Add("ID", id);
-                }
-
-                if (unitsProperties.ContainsKey("type"))
-                {
-                    UnitsAttributes[UnitsAttributes.Count - 1].Add("type", unitsProperties["type"]);
-                }
-
-                if (unitsProperties.ContainsKey("position"))
-                {
-                    List<float> coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["position"].ToString());
-                    if (coorditates == null)
+                    Dictionary<string, object> unitsProperties = JsonConvert.DeserializeObject<Dictionary<string, object>>(units[j.ToString()].ToString());
+                    if (unitsProperties == null)
                     {
                         return false;
                     }
+                    UnitsAttributes.Add(new Dictionary<string, object>());
+                    UnitsAttributes[UnitsAttributes.Count - 1].Add("Owner", i);
 
-                    UnitsAttributes[UnitsAttributes.Count - 1].Add("position", new Vector3(coorditates[1], coorditates[2], coorditates[0]));
-                }
-                if (unitsProperties.ContainsKey("destination"))
-                {
-                    List<float> coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["destination"].ToString());
-                    if (coorditates == null)
+                    if (unitsProperties.ContainsKey("uid"))
                     {
-                        return false;
+                        int id = int.Parse(unitsProperties["uid"].ToString());
+                        UnitsAttributes[UnitsAttributes.Count - 1].Add("ID", id);
                     }
-                    UnitsAttributes[UnitsAttributes.Count - 1].Add("destination", new Vector3(coorditates[1], coorditates[2], coorditates[0]));
+
+                    if (unitsProperties.ContainsKey("type"))
+                    {
+                        UnitsAttributes[UnitsAttributes.Count - 1].Add("type", unitsProperties["type"]);
+                    }
+
+                    if (unitsProperties.ContainsKey("position"))
+                    {
+                        List<float> coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["position"].ToString());
+                        if (coorditates == null)
+                        {
+                            return false;
+                        }
+
+                        UnitsAttributes[UnitsAttributes.Count - 1].Add("position", new Vector3(coorditates[1], coorditates[2], coorditates[0]));
+                    }
+                    if (unitsProperties.ContainsKey("destination"))
+                    {
+                        List<float> coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["destination"].ToString());
+                        if (coorditates == null)
+                        {
+                            return false;
+                        }
+                        UnitsAttributes[UnitsAttributes.Count - 1].Add("destination", new Vector3(coorditates[1], coorditates[2], coorditates[0]));
+                    }
                 }
             }
+            startIndex += units.Count;
         }
         return true;
     }
