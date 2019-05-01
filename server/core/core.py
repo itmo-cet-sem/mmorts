@@ -2,17 +2,9 @@
 The game core module.
 """
 
-from math import sqrt
-
 from .player import Player
 from .unit import UnitType
 from .world import World
-
-
-UNIT_TYPES = {
-    'basic_circle': UnitType('basic_circle', 1),
-    'basic_square': UnitType('basic_square', sqrt(2)),
-}
 
 
 def check_player(func):
@@ -45,11 +37,33 @@ class Core:
             return f'Player {player_name} already exists'
 
     @check_player
+    def register_unit_type(self, player, unit_type_name, params):
+        if unit_type_name in player.unit_types:
+            return f'Unit type {unit_type_name} already exists'
+        player.unit_types[unit_type_name] = UnitType(
+            unit_type_name, player, params)
+
+    @check_player
+    def delete_unit_type(self, player, unit_type_name):
+        if unit_type_name not in player.unit_types:
+            return
+        for unit in player.units.values():
+            if unit.type.name == unit_type_name:
+                return (f'Cannot delete unit type {unit_type_name} '
+                        f'if there are units of this type exist')
+        player.unit_types.pop(unit_type_name)
+
+    @check_player
+    def get_unit_types(self, player):
+        return [{'name': x, 'params': y.params}
+                for x, y in player.unit_types.items()]
+
+    @check_player
     def spawn_unit(self, player, unit_type_name):
-        if unit_type_name not in UNIT_TYPES:
+        if unit_type_name not in player.unit_types:
             return f'Unit type {unit_type_name} does not exist'
         self.world.spawn_unit(
-            player, UNIT_TYPES[unit_type_name])
+            player, player.unit_types[unit_type_name])
 
     @check_player
     def move_unit(self, player, uid, destination):
