@@ -94,12 +94,12 @@ def handle_request(addr, request, player_name, core):
     return json.dumps(resp).encode('utf-8'), player_name
 
 
-def authorisation(conn):
-    #   TODO There should be a good authorization system
+def authorization(conn):
+    # TODO There should be a good authorization system
     request = conn.recv(1024)
     request = json.loads(request.decode('utf-8'))
     if request.get('c', False) == 'login':
-        #   Get user from DB, verify that he is legit
+        # Get user from DB, verify that he is legit
         player_name = request.get('player_name', False)
         if player_name == 'DefaultPlayer':
             return player_name
@@ -110,10 +110,10 @@ def authorisation(conn):
 
 def client_connected(conn, addr, core):
     # TODO Create an object of a class 'User' whenever a connection occurs
-    player_name = authorisation(conn)
+    player_name = authorization(conn)
     if player_name:
-        conn.sendall(json.dumps({"r": "success"}).encode('utf-8'))
-        log(f"Client logged in as {player_name}")
+        conn.sendall(json.dumps({'r': 'success'}).encode('utf-8'))
+        log(f'Client logged in as {player_name}')
         while True:
             request = conn.recv(1024)
             if not request:
@@ -122,8 +122,8 @@ def client_connected(conn, addr, core):
             conn.sendall(response)
         log(f'Client {addr} ({player_name}) disconnected')
     else:
-        conn.sendall(json.dumps({"r": "fail"}).encode('utf-8'))
-        log("Something went wrong with client connection")
+        conn.sendall(json.dumps({'r': 'fail'}).encode('utf-8'))
+        log('Something went wrong with client connection')
 
 
 def run_server(core):

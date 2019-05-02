@@ -18,7 +18,7 @@ class ClientAPI:
     def __enter__(self):
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         self.sock.close()
 
     def __del__(self):
@@ -61,16 +61,16 @@ def main():
     }
 
     # FIXME
-    print("Executing authorisation")
-    auth_response = api.login("DefaultPlayer").get('r', False)
+    print('Executing authorization')
+    auth_response = api.login('DefaultPlayer').get('r', False)
     if auth_response == 'fail' or auth_response is False:
-        print("Wrong authorisation parameters!")
+        print('Wrong authorization parameters!')
         return 1
     else:
-        print("Auth successful!")
+        print('Auth successful!')
 
     while True:
-        #   TODO Need to add exit conditions
+        # TODO Add exit conditions
         raw_request = input('>>> ')
         req = raw_request.split(' ')
 
