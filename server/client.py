@@ -54,7 +54,7 @@ def main():
         'login': ['player_name'],
         'spawn_unit': ['unit_type'],
         'move_unit': ['uid', 'destination'],
-        'map': [],
+        'map': ['space', 'sectors'],
     }
 
     while True:
@@ -68,6 +68,9 @@ def main():
 
                 if cmd == 'move_unit':
                     kwargs['destination'] = json.loads(kwargs['destination'])
+
+                if cmd == 'map':
+                    kwargs['sectors'] = json.loads(kwargs['sectors'])
 
             else:
                 kwargs = {x.split('=')[0]: x.split('=')[1] for x in args}

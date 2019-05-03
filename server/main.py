@@ -65,7 +65,9 @@ def handle_request(addr, request, player_name, core):
                 error = core.move_unit(player_name, uid, destination)
 
             elif cmd == 'map':
-                response = core.get_map(player_name)
+                space = int(request['space'])
+                sectors = request['sectors']
+                response = core.get_map(player_name, space, sectors)
 
             else:
                 error = f'Unknown command: {cmd}'
