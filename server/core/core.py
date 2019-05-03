@@ -63,6 +63,6 @@ class Core:
         result = []
         for sector in sectors:
             units = [x.to_dict(player_name) for x in
-                     self.world.map[space][tuple(sector)].values()]
+                     self.world.map[space][sector].values()]
             result.append({'space': space, 'sector': sector, 'units': units})
         return result

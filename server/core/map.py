@@ -100,14 +100,16 @@ class Space:
             for uid in to_remove:
                 sector.pop(uid)
         for unit in to_move:
-            self[tuple(unit.position.sector)][unit.uid] = unit
+            self[unit.position.sector][unit.uid] = unit
 
     def __getitem__(self, key):
+        key = tuple(key)
         if key not in self.sectors:
             self.sectors[key] = {}
         return self.sectors[key]
 
     def __setitem__(self, key, value):
+        key = tuple(key)
         if key not in self.sectors:
             self.sectors[key] = {}
         self.sectors[key] = value
