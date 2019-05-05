@@ -45,6 +45,9 @@ namespace GameLogic
                     Weight = 100;
                     Image = Resources.LoadAll(@"Textures\units")[7] as Sprite;
                     break;
+                default:
+                    Weight = 0;
+                    break;
             }
             Name = templateKey;
         }

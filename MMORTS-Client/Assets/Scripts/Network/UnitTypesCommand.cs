@@ -33,7 +33,7 @@ public class UnitTypesCommand : Command
                     List<string> compontensKeys = JsonConvert.DeserializeObject<List<string>>(typeParams["components"].ToString());
                     for (int j=0;j< compontensKeys.Count;j++)
                     {
-                        components.Add(GameManager.Components[compontensKeys[i]]);
+                        components.Add(GameManager.Components[compontensKeys[j]]);
                     }
                 }
                 if (typeParams.ContainsKey("frame"))

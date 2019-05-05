@@ -32,11 +32,18 @@ public class InterfaceNavigation : MonoBehaviour
     }
     public void OpenConstructor()
     {
-        ConstructorSelector.SetActive(false);
-        Constructor.SetActive(true);
+        openConstructor();
         GameLogic.Frame selectedFrame = GameLogic.GameManager.Frames[ConstructorSelector.GetComponent<FrameSelection>().SelectedFrame];
         Constructor.GetComponent<CellInitializer>().createCells(selectedFrame);
-        Constructor.GetComponent<CreateUnitType>().TypeFrame =selectedFrame;
+        Constructor.GetComponent<CreateUnitType>().TypeFrame = selectedFrame;
+        Constructor.GetComponent<CreateUnitType>().ScreenPrepare(false);
+    }
+    public void OpenConstructorView()
+    {
+        openConstructor();
+        GameLogic.UnitType selectedUnit = GameLogic.GameManager.UnitTypes[ConstructorSelector.GetComponent<UnitTypeSelect>().SelectedUnitType];
+        Constructor.GetComponent<CellInitializer>().createCells(selectedUnit);
+        Constructor.GetComponent<CreateUnitType>().ScreenPrepare(true);
     }
     public void OpenConstructorSelector()
     {
@@ -51,5 +58,11 @@ public class InterfaceNavigation : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    private void openConstructor()
+    {
+        ConstructorSelector.SetActive(false);
+        Constructor.SetActive(true);
     }
 }

@@ -11,4 +11,9 @@ public class Cell : MonoBehaviour
         transform.parent.GetComponent<ComponentSelector>().CurrentCell = this;
         transform.parent.GetComponent<ComponentSelector>().InitializeWindow();
     }
+    public void ExamineCell()
+    {
+        transform.parent.GetComponent<ComponentSelector>().CurrentCell = this;
+        transform.parent.GetComponent<ComponentSelector>().ShowDiscription();
+    }
 }

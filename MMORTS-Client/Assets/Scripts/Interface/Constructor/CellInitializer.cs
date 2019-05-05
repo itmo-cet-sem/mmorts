@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CellInitializer : MonoBehaviour
 {
@@ -25,6 +26,12 @@ public class CellInitializer : MonoBehaviour
         placeComponentCell(frame.MovementComponents, 1, GameLogic.ComponentPositions.Movement);
     }
 
+    public void createCells(GameLogic.UnitType unitType)
+    {
+        createCells(unitType.UnitFrame);
+        placeComponents(unitType);
+    }
+
     private void clearCells()
     {
         if (cells != null)
@@ -41,21 +48,47 @@ public class CellInitializer : MonoBehaviour
         }
     }
 
-    private void placeComponentCell(int count, int row, GameLogic.ComponentPositions position)
+    private void placeComponentCell(int count, int row, GameLogic.ComponentPositions position, bool isView = false)
     {
         for (int i = 0; i < count; i++)
         {
             GameObject cell = Instantiate(CellTemplate, CellsField.transform);
-            cell.transform.position =placeCell(cell.transform.position,i, row);
+            cell.GetComponent<RectTransform>().anchoredPosition =placeCell(cell.GetComponent<RectTransform>(),i, row);
             cell.GetComponent<Cell>().ComponentPosition = position;
+            cell.GetComponent<Button>().onClick.AddListener(delegate { cell.GetComponent<Cell>().SelectCell(); });
             cells.Add(cell);
         }
     }
 
-    private Vector3 placeCell(Vector3 position, int i, int j)
+    private void placeComponents(GameLogic.UnitType unitType)
     {
-        position.x -= i * 120 - 90;
-        position.y -= j * 120 + 30;
+        bool[] isComponentUsed = new bool[unitType.Components.Count];
+        for (int i =0;i<cells.Count;i++)
+        {
+            for (int j=0;j<unitType.Components.Count;j++)
+            {
+                if (!isComponentUsed[j])
+                {
+                    if (unitType.Components[j].ComponentPosition == cells[i].GetComponent<Cell>().ComponentPosition)
+                    {
+                        isComponentUsed[j] = true;
+                        Cell cell = cells[i].GetComponent<Cell>();
+                        cell.CurrentComponent = unitType.Components[j];
+                        cells[i].transform.GetChild(0).GetComponent<Image>().sprite = unitType.Components[j].Image;
+                        cells[i].GetComponent<Button>().onClick.RemoveAllListeners();
+                        cells[i].GetComponent<Button>().onClick.AddListener(delegate { cell.ExamineCell(); });
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private Vector2 placeCell(RectTransform rectTransform, int i, int j)
+    {
+        Vector2 position = rectTransform.anchoredPosition;
+        position.x -= i * 74 - 90;
+        position.y -= j * 74 + 30;
         return position;
     }
 }

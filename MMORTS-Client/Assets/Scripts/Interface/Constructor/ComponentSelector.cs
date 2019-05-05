@@ -19,6 +19,11 @@ public class ComponentSelector : ScrollSelector
         DesriptionText.text = "";
     }
 
+    public void ShowDiscription()
+    {
+        showDiscription(CurrentCell.CurrentComponent.Name);
+    }
+
     override protected void createButtons()
     {
         i = 0;
@@ -41,10 +46,14 @@ public class ComponentSelector : ScrollSelector
     }
     private void setSelectedComponent(string name)
     {
-        DesriptionText.text = name;
-        DesriptionText.text += "\nComponent Weight: " + GameManager.Components[name].Weight;
+        showDiscription(name);
         CurrentCell.CurrentComponent = GameManager.Components[name];
         CurrentCell.transform.GetChild(0).GetComponent<Image>().sprite = GameManager.Components[name].Image;
         //EditButton.SetActive(true);
+    }
+    private void showDiscription(string name)
+    {
+        DesriptionText.text = name;
+        DesriptionText.text += "\nComponent Weight: " + GameManager.Components[name].Weight;
     }
 }

@@ -42,9 +42,8 @@ public class ScrollSelector : MonoBehaviour
 
     protected void addButtonToList(GameObject button, int i)
     {
-        Vector3 pos = button.transform.position;
-        pos.y -= i * 60;
-        button.transform.position = pos;
+        RectTransform rect = button.GetComponent<RectTransform>();
+        rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, rect.anchoredPosition.y - i * 40);
         buttons.Add(button);
     }
 

@@ -11,7 +11,11 @@ public class UnitTypeSelect : ScrollSelector
     [SerializeField]
     GameObject EditButton;
     [SerializeField]
+    GameObject ExamineButton;
+    [SerializeField]
     Text DesriptionText;
+
+    public string SelectedUnitType;
 
     private int i;
 
@@ -19,6 +23,7 @@ public class UnitTypeSelect : ScrollSelector
     {
         DeleteButton.SetActive(false);
         EditButton.SetActive(false);
+        ExamineButton.SetActive(false);
         DesriptionText.text = "";
         i = 0;
         foreach (string key in GameManager.UnitTypes.Keys)
@@ -42,6 +47,8 @@ public class UnitTypeSelect : ScrollSelector
         DesriptionText.text += "\nSize: " + GameManager.UnitTypes[name].Size.ToString();
         DesriptionText.text += "\nComponents used: " + GameManager.UnitTypes[name].Components.Count.ToString();
         GameManager.CurrentWorld.TempSelectedType = GameManager.UnitTypes[name];
+        SelectedUnitType = name;
+        ExamineButton.SetActive(true);
         //DeleteButton.SetActive(true);
         //EditButton.SetActive(true);
     }

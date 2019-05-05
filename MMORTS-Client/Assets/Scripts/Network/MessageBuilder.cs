@@ -46,7 +46,10 @@ public static class MessageBuilder
         List<string> components = new List<string>();
         for (int i=0;i<unitType.Components.Count;i++)
         {
-            components.Add(unitType.Components[i].Name);
+            if (unitType.Components[i] != null)
+            {
+                components.Add(unitType.Components[i].Name);
+            }
         }
         commandParams.Add("components", components);
         commandParams.Add("frame", unitType.UnitFrame.Name);

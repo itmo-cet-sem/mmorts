@@ -33,7 +33,7 @@ public class GameStart : MonoBehaviour
             }
         }
     }
-    void connectAttempt()
+    public void connectAttempt()
     {
         Connector.ConnectToServer();
         if (Connector.IsConnected)

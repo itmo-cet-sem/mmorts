@@ -7,29 +7,48 @@ using GameLogic;
 public class CreateUnitType : MonoBehaviour
 {
     [SerializeField]
-    Text Name;
+    InputField Name;
 
     [SerializeField]
     GameObject CellsField;
 
+    [SerializeField]
+    InterfaceNavigation interfaceNavigation;
+
     public Frame TypeFrame;
+
+    private bool IsView;
+
+    public void ScreenPrepare(bool isView)
+    {
+        IsView = isView;
+        Name.text = "";
+        Name.gameObject.SetActive(!IsView);
+    }
 
     public void CreateType()
     {
-        if (Name.text!="")
+        if (!IsView)
         {
-            if (!GameManager.UnitTypes.ContainsKey(Name.text))
+            if (Name.text != "")
             {
-                createType();
+                if (!GameManager.UnitTypes.ContainsKey(Name.text))
+                {
+                    createType();
+                }
+                else
+                {
+                    CreateMessage.CreateWarningMessage("Error", "This name is already taken", transform);
+                }
             }
             else
             {
-                CreateMessage.CreateWarningMessage("Error", "This name is already taken", transform);
+                CreateMessage.CreateWarningMessage("Error", "Enter unit type name", transform);
             }
         }
         else
         {
-            CreateMessage.CreateWarningMessage("Error", "Enter unit type name", transform);
+            interfaceNavigation.CloseConstructor();
         }
     }
 
@@ -44,5 +63,6 @@ public class CreateUnitType : MonoBehaviour
         UnitType newType = new UnitType(TypeFrame, components, Name.text);
         MessageSender.SendRegisterUnitTypeMessage(newType);
         MessageSender.SendGetUnitTypesMessage();
+        interfaceNavigation.CloseConstructor();
     }
 }
