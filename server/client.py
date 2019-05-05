@@ -21,6 +21,9 @@ class ClientAPI:
     def __exit__(self, exc_type, exc_value, traceback):
         self.sock.close()
 
+    def __del__(self):
+        self.sock.close()
+
     def _send(self, data):
         self.sock.sendall(json.dumps(data).encode('utf-8'))
 
@@ -70,7 +73,17 @@ def main():
         'map': [],
     }
 
+    # FIXME
+    print('Executing authorization')
+    auth_response = api.login('DefaultPlayer').get('r', False)
+    if auth_response == 'fail' or auth_response is False:
+        print('Wrong authorization parameters!')
+        return 1
+    else:
+        print('Auth successful!')
+
     while True:
+        # TODO Add exit conditions
         raw_request = input('>>> ')
         req = raw_request.split(' ')
 
