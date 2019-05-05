@@ -21,6 +21,7 @@ class Unit:
     def to_dict(self, private=None):
         result = {
             'uid': str(self.uid),
+            'player': self.player.name,
             'type': self.type.name,
             'position': self.position.to_list(),
         }

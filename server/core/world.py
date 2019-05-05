@@ -2,7 +2,7 @@
 Module describing game world.
 """
 
-from random import uniform, randint
+from random import uniform
 from sys import stderr
 from threading import Event, Thread
 from time import sleep
@@ -25,7 +25,7 @@ class World:
     def spawn_unit(self, player, unit_type):
         # not thread-safe: may break self.next_tick
         # TODO: make spawning units in self.next_tick
-        sector = (randint(0, 9), randint(0, 9))
+        sector = (0, 0)
         pos = Position(
             0, sector, [uniform(0, SECTOR_SIZE), uniform(0, SECTOR_SIZE)])
         unit = Unit(self.current_uid, player, unit_type, pos)

@@ -73,10 +73,11 @@ class Core:
             return f'Unit {uid} does not belong to player {player.name}'
         self.world.move_unit(player, uid, destination)
 
-    def get_map(self, player_name, space, sectors):
+    @check_player
+    def get_map(self, player, space, sectors):
         result = []
         for sector in sectors:
-            units = [x.to_dict(player_name) for x in
+            units = [x.to_dict(player) for x in
                      self.world.map[space][sector].values()]
             result.append({'space': space, 'sector': sector, 'units': units})
         return result
