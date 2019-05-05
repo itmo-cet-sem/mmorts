@@ -16,18 +16,22 @@ public class InterfaceNavigation : MonoBehaviour
 
     public void ToMenu()
     {
+        Camera.main.GetComponent<CameraControl>().IsInMenu = true;
         Menu.SetActive(true);
     }
     public void CloseMenu()
     {
+        Camera.main.GetComponent<CameraControl>().IsInMenu = false;
         Menu.SetActive(false);
     }
     public void CloseConstructorSelector()
     {
+        Camera.main.GetComponent<CameraControl>().IsInMenu = false;
         ConstructorSelector.SetActive(false);
     }
     public void CloseConstructor()
     {
+        Camera.main.GetComponent<CameraControl>().IsInMenu = false;
         Constructor.SetActive(false);
     }
     public void OpenConstructor()
@@ -47,6 +51,7 @@ public class InterfaceNavigation : MonoBehaviour
     }
     public void OpenConstructorSelector()
     {
+        Camera.main.GetComponent<CameraControl>().IsInMenu = true;
         ConstructorSelector.SetActive(true);
         ConstructorSelector.GetComponent<UnitTypeSelect>().InitializeWindow();
         ConstructorSelector.GetComponent<FrameSelection>().InitializeWindow();
@@ -62,6 +67,7 @@ public class InterfaceNavigation : MonoBehaviour
 
     private void openConstructor()
     {
+        Camera.main.GetComponent<CameraControl>().IsInMenu = true;
         ConstructorSelector.SetActive(false);
         Constructor.SetActive(true);
     }
