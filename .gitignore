@@ -552,5 +552,5 @@ healthchecksdb
 
 !MMORTS-Client/Assets/Plugins/*.dll
 !MMORTS-Client/Assets/**/*.meta
-
+!MMORTS-Client/Packages/manifest.json
 # End of https://www.gitignore.io/api/c++,unity,python,visualstudio,visualstudiocode
