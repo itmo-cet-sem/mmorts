@@ -20,7 +20,7 @@ public static class MessageSender
         Connector.SendMessage(MessageBuilder.MapMessage());
     }
 
-    public static void SendSpawnMessage(UnitTypes unitType)
+    public static void SendSpawnMessage(string unitType)
     {
         Connector.SendMessage(MessageBuilder.SpawnMessage(unitType));
     }
@@ -29,6 +29,18 @@ public static class MessageSender
     {
         Connector.SendMessage(MessageBuilder.MoveMessage(uid, GameManager.CurrentWorld.Units[uid].Destination));
     }
+
+    public static void SendRegisterUnitTypeMessage(UnitType unitType)
+    {
+        Connector.SendMessage(MessageBuilder.RegisterUnitTypeMessage(unitType));
+    }
+
+    public static void SendGetUnitTypesMessage()
+    {
+        Connector.SendMessage(MessageBuilder.GetUnitTypesMessage());
+        Connector.OnUnitsTypesUpdate += updateUnitsTypes;
+    }
+
     public static void StartingGetUnitInfo()
     {
         Connector.OnUnitsUpdate += updateUnits;
@@ -73,15 +85,7 @@ public static class MessageSender
                 }
                 if (mapInfo.UnitsAttributes[i].ContainsKey("type"))
                 {
-                    switch (mapInfo.UnitsAttributes[i]["type"])
-                    {
-                        case "basic_circle":
-                            tempUnit.UnitType = UnitTypes.Circle;
-                            break;
-                        default:
-                            tempUnit.UnitType = UnitTypes.Square;
-                            break;
-                    }
+                    tempUnit.UnitType = mapInfo.UnitsAttributes[i]["type"].ToString();
                 }
                 if (mapInfo.UnitsAttributes[i].ContainsKey("position"))
                 {
@@ -99,6 +103,17 @@ public static class MessageSender
             }
         }
 
+    }
+
+    private static void updateUnitsTypes(object types)
+    {
+        Connector.OnUnitsTypesUpdate -= updateUnitsTypes;
+        UnitTypesCommand typesCommand = new UnitTypesCommand();
+        bool isSuccess = typesCommand.ProccessCommand(types);
+        if (isSuccess)
+        {
+            GameManager.UnitTypes = typesCommand.unitsTypes;
+        }
     }
 
     private static void createPlayers(string[] names)

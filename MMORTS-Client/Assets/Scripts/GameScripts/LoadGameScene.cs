@@ -18,6 +18,7 @@ public class LoadGameScene : MonoBehaviour
         GameLogic.GameManager.Players = new List<GameLogic.Player>();
         GameLogic.GameManager.Players.Add(GameLogic.GameManager.CurrentPlayer);
         GameLogic.GameManager.LastState = 0;
+        MessageSender.SendGetUnitTypesMessage();
     }
 
     void loadMap()

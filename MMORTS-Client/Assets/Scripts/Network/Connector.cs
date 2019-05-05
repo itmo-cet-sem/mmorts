@@ -75,7 +75,6 @@ public static class Connector
 
         StringBuilder builder = new StringBuilder();
         builder.Append(Encoding.UTF8.GetString(recData));
-        Debug.Log("server answered: " + builder.ToString());
         processAnswer(builder.ToString());
 
         socket.BeginReceive(_recieveBuffer, 0, _recieveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
@@ -83,6 +82,7 @@ public static class Connector
 
     private static void processAnswer(string answer)
     {
+        bool print = true;
         Dictionary<string, object> answerD = new Dictionary<string, object>();
         try
         {
@@ -115,9 +115,15 @@ public static class Connector
                             if (OnUnitsUpdate!=null)
                             {
                                 OnUnitsUpdate(answerD["r"]);
+                                print = true;
                             }
                             break;
-
+                        case "get_unit_types":
+                            if (OnUnitsTypesUpdate != null)
+                            {
+                                OnUnitsTypesUpdate(answerD["r"]);
+                            }
+                            break;
                         default:
                             Debug.Log("Unrecognised command");
                             break;
@@ -140,6 +146,10 @@ public static class Connector
         {
             Debug.Log("Not a command answer");
         }
+        if (print)
+        {
+            Debug.Log("server answered: " + answer);
+        }
         return;
     }
     public delegate void AnswerRecieved(string anwser);
@@ -147,6 +157,9 @@ public static class Connector
 
     public delegate void UnitsUpdated(object anwser);
     public static event UnitsUpdated OnUnitsUpdate;
+
+    public delegate void UnitsTypesUpdated(object anwser);
+    public static event UnitsTypesUpdated OnUnitsTypesUpdate;
 
     public delegate void SuccessRecieved();
     public static event SuccessRecieved OnSuccessRecieve;
