@@ -21,6 +21,10 @@ namespace GameLogic
         }
         private static void createComponents()
         {
+            if (Components != null)
+            {
+                Components.Clear();
+            }
             Components = new Dictionary<string, Component>();
             Components.Add("Wheels", new Component("Wheels"));
             Components.Add("Legs", new Component("Legs"));
@@ -31,9 +35,13 @@ namespace GameLogic
         }
         private static void createFrames()
         {
+            if (Frames != null)
+            {
+                Frames.Clear();
+            }
             Frames = new Dictionary<string, Frame>();
-            Frames.Add("LightUnit",new Frame("LightUnit"));
-            Frames.Add("HeavyUnit",new Frame("HeavyUnit"));
+            Frames.Add("LightUnit", new Frame("LightUnit"));
+            Frames.Add("HeavyUnit", new Frame("HeavyUnit"));
         }
     }
 }
