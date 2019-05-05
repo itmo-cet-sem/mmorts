@@ -4,9 +4,10 @@ Module describing game units.
 
 
 class UnitType:
-    def __init__(self, name, radius):
+    def __init__(self, name, player, params):
         self.name = name
-        self.radius = radius
+        self.player = player
+        self.params = params
 
 
 class Unit:

@@ -12,7 +12,15 @@ public class GameStart : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        connectAttempt();
+        if (!Connector.IsConnected)
+        {
+            connectAttempt();
+        }
+        else
+        {
+            ConnectionString.text = "Connected";
+        }
+        GameLogic.GameManager.onStart();
     }
 
     // Update is called once per frame
@@ -20,7 +28,7 @@ public class GameStart : MonoBehaviour
     {
         if (!Connector.IsConnected)
         {
-            if (time< attemptTime)
+            if (time < attemptTime)
             {
                 ConnectionString.text = "Connecting... " + ((int)(attemptTime - time)).ToString();
                 time += Time.deltaTime;
@@ -32,7 +40,7 @@ public class GameStart : MonoBehaviour
             }
         }
     }
-    void connectAttempt()
+    public void connectAttempt()
     {
         Connector.ConnectToServer();
         if (Connector.IsConnected)

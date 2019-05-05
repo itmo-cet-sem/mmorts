@@ -29,6 +29,7 @@ public class ButtonsProcessing : MonoBehaviour
         else
         {
             Debug.Log("no connection");
+            GetComponent<GameStart>().connectAttempt();
         }
     }
 
