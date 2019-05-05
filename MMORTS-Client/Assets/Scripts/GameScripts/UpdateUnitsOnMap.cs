@@ -6,9 +6,7 @@ using GameLogic;
 public class UpdateUnitsOnMap : MonoBehaviour
 {
     [SerializeField]
-    GameObject square;
-    [SerializeField]
-    GameObject cirle;
+    GameObject unitTemplate;
 
     Dictionary<int,GameObject> units = new Dictionary<int, GameObject>();
     public void UpdateUnits()
@@ -20,17 +18,9 @@ public class UpdateUnitsOnMap : MonoBehaviour
                 Unit currentUnit = GameManager.CurrentWorld.Units[i];
                 if (!units.ContainsKey(currentUnit.uID))
                 {
-                    GameObject type;
-                    switch (currentUnit.UnitType)
-                    {
-                        case UnitTypes.Circle:
-                            type = cirle;
-                            break;
-                        default:
-                            type = square;
-                            break;
-                    }
-                    units.Add(currentUnit.uID, Instantiate(type, currentUnit.UnitPosition, Quaternion.identity));
+                    GameObject unit = Instantiate(unitTemplate, currentUnit.UnitPosition, Quaternion.identity);
+                    //unit.GetComponent<SpriteRenderer>().sprite = GameManager.UnitTypes[currentUnit.UnitType].Image;
+                    units.Add(currentUnit.uID, unit);
                     units[currentUnit.uID].GetComponent<UnitInfo>().ID = currentUnit.uID;
                 }
                 else
@@ -40,4 +30,6 @@ public class UpdateUnitsOnMap : MonoBehaviour
             }
         }
     }
+
+
 }

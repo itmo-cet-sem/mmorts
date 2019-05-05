@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameControls : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class GameControls : MonoBehaviour
     [SerializeField]
     GameObject destination;
 
+    [SerializeField]
+    GameObject UnitInfo;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,13 +25,9 @@ public class GameControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.C))
-        {
-            MessageSender.SendSpawnMessage(GameLogic.UnitTypes.Circle);
-        }
         if (Input.GetKeyUp(KeyCode.Q))
         {
-            MessageSender.SendSpawnMessage(GameLogic.UnitTypes.Square);
+            MessageSender.SendSpawnMessage(GameLogic.GameManager.CurrentWorld.TempSelectedType.Name);
         }
         if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))
         {
@@ -41,12 +41,17 @@ public class GameControls : MonoBehaviour
                     if (hit.collider.gameObject.tag.Equals("Unit"))
                     {
                         int uid = hit.collider.gameObject.GetComponent<UnitInfo>().ID;
+
+                        UnitInfo.SetActive(true);
+                        UnitInfo.transform.GetChild(0).GetComponent<Text>().text = "Player: " + GameLogic.GameManager.CurrentWorld.Units[uid].Owner.Name;
+                        UnitInfo.transform.GetChild(1).GetComponent<Text>().text = "Unit Type: " +GameLogic.GameManager.CurrentWorld.Units[uid].UnitType.ToString();
+
+                        selection.GetComponent<SpriteRenderer>().enabled = true;
+                        selectedUnit = hit.collider.gameObject;
+                        selection.transform.position = selectedUnit.transform.position;
+                        selection.transform.SetParent(selectedUnit.transform);
                         if (GameLogic.GameManager.CurrentWorld.Units[uid].Owner.Name == GameLogic.GameManager.CurrentPlayer.Name)
                         {
-                            selection.GetComponent<SpriteRenderer>().enabled = true;
-                            selectedUnit = hit.collider.gameObject;
-                            selection.transform.position = selectedUnit.transform.position;
-                            selection.transform.SetParent(selectedUnit.transform);
                             if (!GameLogic.GameManager.CurrentWorld.Units[uid].Destination.Equals(Vector3.negativeInfinity))
                             {
                                 destination.transform.position = GameLogic.GameManager.CurrentWorld.Units[uid].Destination;
@@ -57,6 +62,12 @@ public class GameControls : MonoBehaviour
                                 destination.GetComponent<SpriteRenderer>().enabled = false;
                             }
                         }
+                    }
+                    else
+                    {
+                        UnitInfo.SetActive(false);
+                        selection.GetComponent<SpriteRenderer>().enabled = false;
+                        destination.GetComponent<SpriteRenderer>().enabled = false;
                     }
                 }
                 if (Input.GetMouseButtonDown(1))

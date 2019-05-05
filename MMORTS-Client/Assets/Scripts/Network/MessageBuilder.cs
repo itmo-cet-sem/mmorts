@@ -18,21 +18,11 @@ public static class MessageBuilder
         command.Add("c", "map");
         return JsonConvert.SerializeObject(command);
     }
-    public static string SpawnMessage(GameLogic.UnitTypes unitType)
+    public static string SpawnMessage(string unitType)
     {
         Dictionary<string, string> command = new Dictionary<string, string>();
         command.Add("c", "spawn_unit");
-        string unitTypeString;
-        switch (unitType)
-        {
-            case GameLogic.UnitTypes.Circle:
-                unitTypeString = "basic_circle";
-                break;
-            default:
-                unitTypeString = "basic_square";
-                break;
-        }
-        command.Add("unit_type", unitTypeString);
+        command.Add("unit_type", unitType);
         return JsonConvert.SerializeObject(command);
     }
     public static string MoveMessage(int uid, Vector3 destonation)
@@ -45,6 +35,32 @@ public static class MessageBuilder
         coords.Add(destonation.x);
         coords.Add(destonation.y);
         command.Add("destination", coords);
+        return JsonConvert.SerializeObject(command);
+    }
+    public static string RegisterUnitTypeMessage(GameLogic.UnitType unitType)
+    {
+        Dictionary<string, object> command = new Dictionary<string, object>();
+        command.Add("c", "register_unit_type");
+        command.Add("unit_type", unitType.Name);
+        Dictionary<string, object> commandParams = new Dictionary<string, object>();
+        List<string> components = new List<string>();
+        for (int i=0;i<unitType.Components.Count;i++)
+        {
+            if (unitType.Components[i] != null)
+            {
+                components.Add(unitType.Components[i].Name);
+            }
+        }
+        commandParams.Add("components", components);
+        commandParams.Add("frame", unitType.UnitFrame.Name);
+        command.Add("params", commandParams);
+        return JsonConvert.SerializeObject(command);
+    }
+
+    public static string GetUnitTypesMessage()
+    {
+        Dictionary<string, object> command = new Dictionary<string, object>();
+        command.Add("c", "get_unit_types");
         return JsonConvert.SerializeObject(command);
     }
 }

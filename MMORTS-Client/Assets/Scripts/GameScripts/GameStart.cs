@@ -13,6 +13,7 @@ public class GameStart : MonoBehaviour
     void Start()
     {
         connectAttempt();
+        GameLogic.GameManager.onStart();
     }
 
     // Update is called once per frame
@@ -32,7 +33,7 @@ public class GameStart : MonoBehaviour
             }
         }
     }
-    void connectAttempt()
+    public void connectAttempt()
     {
         Connector.ConnectToServer();
         if (Connector.IsConnected)

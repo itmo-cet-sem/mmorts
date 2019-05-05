@@ -55,9 +55,20 @@ def handle_request(addr, request, player_name, core):
                 core.add_player(player_name)
                 response = player_name
 
+            elif cmd == 'register_unit_type':
+                error = core.register_unit_type(
+                    player_name, request['unit_type'],
+                    request.get('params', {}))
+
+            elif cmd == 'delete_unit_type':
+                error = core.delete_unit_type(
+                    player_name, request['unit_type'])
+
+            elif cmd == 'get_unit_types':
+                response = core.get_unit_types(player_name)
+
             elif cmd == 'spawn_unit':
-                unit_type_name = request['unit_type']
-                error = core.spawn_unit(player_name, unit_type_name)
+                error = core.spawn_unit(player_name, request['unit_type'])
 
             elif cmd == 'move_unit':
                 uid = int(request['uid'])
