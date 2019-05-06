@@ -121,7 +121,15 @@ public static class MessageSender
         GameManager.Players.Clear();
         for (int i = 0; i < names.Length; i++)
         {
-            GameManager.Players.Add(new Player(names[i]));
+            if (names[i] != GameManager.CurrentPlayer.Name)
+            {
+                GameManager.Players.Add(new Player(names[i]));
+            }
+            else
+            {
+                GameManager.Players.Add(GameManager.CurrentPlayer);
+            }
+
         }
     }
     

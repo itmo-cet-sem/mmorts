@@ -68,6 +68,7 @@ public class GameControls : MonoBehaviour
                         UnitInfo.SetActive(false);
                         selection.GetComponent<SpriteRenderer>().enabled = false;
                         destination.GetComponent<SpriteRenderer>().enabled = false;
+                        selectedUnit = null;
                     }
                 }
                 if (Input.GetMouseButtonDown(1))
@@ -75,10 +76,13 @@ public class GameControls : MonoBehaviour
                     if (selectedUnit != null)
                     {
                         int uid = selectedUnit.GetComponent<UnitInfo>().ID;
-                        GameLogic.GameManager.CurrentWorld.Units[uid].Destination = hit.point;
-                        MessageSender.SendMoveMessage(selectedUnit.GetComponent<UnitInfo>().ID);
-                        destination.transform.position = GameLogic.GameManager.CurrentWorld.Units[uid].Destination;
-                        destination.GetComponent<SpriteRenderer>().enabled = true;
+                        if (GameLogic.GameManager.CurrentWorld.Units[uid].Owner.Name == GameLogic.GameManager.CurrentPlayer.Name)
+                        {
+                            GameLogic.GameManager.CurrentWorld.Units[uid].Destination = hit.point;
+                            MessageSender.SendMoveMessage(selectedUnit.GetComponent<UnitInfo>().ID);
+                            destination.transform.position = GameLogic.GameManager.CurrentWorld.Units[uid].Destination;
+                            destination.GetComponent<SpriteRenderer>().enabled = true;
+                        }
                     }
                 }
             }

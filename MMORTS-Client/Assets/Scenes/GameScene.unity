@@ -2508,6 +2508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e80492b3eef6ac84dbc7be65b0cab54c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsInMenu: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -7094,7 +7095,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Accept
+  m_Text: OK
 --- !u!222 &1973389468
 CanvasRenderer:
   m_ObjectHideFlags: 0

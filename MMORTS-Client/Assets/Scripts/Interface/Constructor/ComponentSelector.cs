@@ -21,6 +21,7 @@ public class ComponentSelector : ScrollSelector
 
     public void ShowDiscription()
     {
+        clearButtons();
         showDiscription(CurrentCell.CurrentComponent.Name);
     }
 
