@@ -1,0 +1,275 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "protocol",
+    "type": "object",
+    "oneOf": [
+        {
+            "$ref": "#/definitions/ping"
+        },
+        {
+            "$ref": "#/definitions/help"
+        },
+        {
+            "$ref": "#/definitions/server_status"
+        },
+        {
+            "$ref": "#/definitions/login"
+        },
+        {
+            "$ref": "#/definitions/register_unit_type"
+        },
+        {
+            "$ref": "#/definitions/delete_unit_type"
+        },
+        {
+            "$ref": "#/definitions/get_unit_types"
+        },
+        {
+            "$ref": "#/definitions/spawn_unit"
+        },
+        {
+            "$ref": "#/definitions/move_unit"
+        },
+        {
+            "$ref": "#/definitions/map"
+        }
+    ],
+    "definitions": {
+        "player_name": {
+            "type": "string",
+            "minLength": 1
+        },
+        "unit_type_name": {
+            "type": "string",
+            "minLength": 1
+        },
+        "unit_type_params": {
+            "type": "object"
+        },
+        "unit_type": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "params"
+            ],
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/unit_type_name"
+                },
+                "params": {
+                    "$ref": "#/definitions/unit_type_params"
+                }
+            }
+        },
+        "unit_id": {
+            "type": "string",
+            "pattern": "^(0|[1-9]+[0-9]*)$"
+        },
+        "destination": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+                "type": "number"
+            }
+        },
+        "ping": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command"
+            ],
+            "properties": {
+                "command": {
+                    "const": "ping"
+                },
+                "response": {
+                    "const": "pong"
+                }
+            }
+        },
+        "help": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command"
+            ],
+            "properties": {
+                "command": {
+                    "const": "help"
+                },
+                "response": {
+                    "type": [
+                        "array",
+                        "string"
+                    ],
+                    "items": [
+                        {
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        "server_status": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command"
+            ],
+            "properties": {
+                "command": {
+                    "const": "server_status"
+                },
+                "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "login": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command",
+                "player_name"
+            ],
+            "properties": {
+                "command": {
+                    "const": "login"
+                },
+                "player_name": {
+                    "$ref": "#/definitions/player_name"
+                },
+                "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "register_unit_type": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command",
+                "unit_type_name",
+                "unit_type_params"
+            ],
+            "properties": {
+                "command": {
+                    "const": "register_unit_type"
+                },
+                "unit_type_name": {
+                    "$ref": "#/definitions/unit_type_name"
+                },
+                "unit_type_params": {
+                    "$ref": "#/definitions/unit_type_params"
+                },
+                "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "delete_unit_type": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command",
+                "unit_type_name"
+            ],
+            "properties": {
+                "command": {
+                    "const": "delete_unit_type"
+                },
+                "unit_type_name": {
+                    "$ref": "#/definitions/unit_type_name"
+                },
+                "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "get_unit_types": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command"
+            ],
+            "properties": {
+                "command": {
+                    "const": "get_unit_types"
+                },
+                "response": {
+                    "type": [
+                        "array",
+                        "string"
+                    ],
+                    "items": [
+                        {
+                            "$ref": "#/definitions/unit_type"
+                        }
+                    ]
+                }
+            }
+        },
+        "spawn_unit": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command",
+                "unit_type_name"
+            ],
+            "properties": {
+                "command": {
+                    "const": "spawn_unit"
+                },
+                "unit_type_name": {
+                    "$ref": "#/definitions/unit_type_name"
+                },
+                "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "move_unit": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command",
+                "unit_id",
+                "destination"
+            ],
+            "properties": {
+                "command": {
+                    "const": "move_unit"
+                },
+                "unit_id": {
+                    "$ref": "#/definitions/unit_id"
+                },
+                "destination": {
+                    "$ref": "#/definitions/destination"
+                },
+                "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "map": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "command"
+            ],
+            "properties": {
+                "command": {
+                    "const": "map"
+                },
+                "response": {
+                    "type": [
+                        "object",
+                        "string"
+                    ]
+                }
+            }
+        }
+    }
+}
