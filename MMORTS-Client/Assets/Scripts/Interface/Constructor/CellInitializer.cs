@@ -16,19 +16,19 @@ public class CellInitializer : MonoBehaviour
 
     private List<GameObject> cells;
 
-    public void createCells(GameLogic.Frame frame)
+    public void createCells(GameLogic.Frame frame, bool isView = false)
     {
         ComponentSelector.ClearComponentList();
         clearCells();
-        placeComponentCell(frame.ArmorComponents, -2, GameLogic.ComponentPositions.Armor);
-        placeComponentCell(frame.ToolsComponents, -1, GameLogic.ComponentPositions.Tool);
-        placeComponentCell(frame.CoreComponents, 0, GameLogic.ComponentPositions.Core);
-        placeComponentCell(frame.MovementComponents, 1, GameLogic.ComponentPositions.Movement);
+        placeComponentCell(frame.ArmorComponents, -2, GameLogic.ComponentPositions.Armor, isView);
+        placeComponentCell(frame.ToolsComponents, -1, GameLogic.ComponentPositions.Tool, isView);
+        placeComponentCell(frame.CoreComponents, 0, GameLogic.ComponentPositions.Core, isView);
+        placeComponentCell(frame.MovementComponents, 1, GameLogic.ComponentPositions.Movement, isView);
     }
 
     public void createCells(GameLogic.UnitType unitType)
     {
-        createCells(unitType.UnitFrame);
+        createCells(unitType.UnitFrame, true);
         placeComponents(unitType);
     }
 
@@ -48,14 +48,17 @@ public class CellInitializer : MonoBehaviour
         }
     }
 
-    private void placeComponentCell(int count, int row, GameLogic.ComponentPositions position, bool isView = false)
+    private void placeComponentCell(int count, int row, GameLogic.ComponentPositions position, bool isView)
     {
         for (int i = 0; i < count; i++)
         {
             GameObject cell = Instantiate(CellTemplate, CellsField.transform);
             cell.GetComponent<RectTransform>().anchoredPosition =placeCell(cell.GetComponent<RectTransform>(),i, row);
             cell.GetComponent<Cell>().ComponentPosition = position;
-            cell.GetComponent<Button>().onClick.AddListener(delegate { cell.GetComponent<Cell>().SelectCell(); });
+            if (!isView)
+            {
+                cell.GetComponent<Button>().onClick.AddListener(delegate { cell.GetComponent<Cell>().SelectCell(); });
+            }
             cells.Add(cell);
         }
     }

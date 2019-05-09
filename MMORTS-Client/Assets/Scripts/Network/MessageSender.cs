@@ -15,9 +15,17 @@ public static class MessageSender
         Connector.OnAnswerRecieve += loginAnswer;
     }
     
-    public static void SendMapMessage()
+    public static void SendMapMessage(int space, Dictionary<Vector2Int, Sector> sectors)
     {
-        Connector.SendMessage(MessageBuilder.MapMessage());
+        List<Vector2Int> sectorsList = new List<Vector2Int>();
+        foreach (Vector2Int key in sectors.Keys)
+        {
+            if (sectors[key].IsActive)
+            {
+                sectorsList.Add(key);
+            }
+        }
+        Connector.SendMessage(MessageBuilder.MapMessage(space, sectorsList));
     }
 
     public static void SendSpawnMessage(string unitType)
@@ -25,9 +33,11 @@ public static class MessageSender
         Connector.SendMessage(MessageBuilder.SpawnMessage(unitType));
     }
 
-    public static void SendMoveMessage(int uid)
+    public static void SendMoveMessage(int uid, int space, Sector sector)
     {
-        Connector.SendMessage(MessageBuilder.MoveMessage(uid, GameManager.CurrentWorld.Units[uid].Destination));
+        Vector2Int coordinates = new Vector2Int((int)sector.Units[uid].Destination.x / Config.SectorSize, (int)sector.Units[uid].Destination.z / Config.SectorSize);
+        Vector3 destination = new Vector3(sector.Units[uid].Destination.x - coordinates.x * 10, sector.Units[uid].Destination.y - coordinates.y * 10);
+        Connector.SendMessage(MessageBuilder.MoveMessage(uid, space, coordinates, destination));
     }
 
     public static void SendRegisterUnitTypeMessage(UnitType unitType)
@@ -71,35 +81,40 @@ public static class MessageSender
             {
                 createPlayers(mapInfo.PlayerNames.ToArray());
             }
-            GameManager.CurrentWorld.Units.Clear();
-            for (int i=0;i< mapInfo.UnitsAttributes.Count;i++)
+            foreach (Vector2Int key in mapInfo.UnitsAttributes.Keys)
             {
-                Unit tempUnit = new Unit();
-                if (mapInfo.UnitsAttributes[i].ContainsKey("ID"))
+                GameManager.CurrentWorld.Sectors[key].Units.Clear();
+                for (int i = 0; i < mapInfo.UnitsAttributes[key].Count; i++)
                 {
-                    tempUnit.uID = (int)mapInfo.UnitsAttributes[i]["ID"];
-                }
-                if (mapInfo.UnitsAttributes[i].ContainsKey("Owner"))
-                {
-                    tempUnit.Owner = GameManager.Players[(int)mapInfo.UnitsAttributes[i]["Owner"]];
-                }
-                if (mapInfo.UnitsAttributes[i].ContainsKey("type"))
-                {
-                    tempUnit.UnitType = mapInfo.UnitsAttributes[i]["type"].ToString();
-                }
-                if (mapInfo.UnitsAttributes[i].ContainsKey("position"))
-                {
-                    tempUnit.UnitPosition = (Vector3)mapInfo.UnitsAttributes[i]["position"];
-                }
-                if (mapInfo.UnitsAttributes[i].ContainsKey("destination"))
-                {
-                    tempUnit.Destination = (Vector3)mapInfo.UnitsAttributes[i]["destination"];
-                }
-                else
-                {
-                    tempUnit.Destination = Vector3.negativeInfinity;
-                }
-                GameManager.CurrentWorld.Units.Add(tempUnit.uID, tempUnit);
+                    Unit tempUnit = new Unit();
+                    tempUnit.SectorID = key;
+                    if (mapInfo.UnitsAttributes[key][i].ContainsKey("ID"))
+                    {
+                        tempUnit.uID = (int)mapInfo.UnitsAttributes[key][i]["ID"];
+                    }
+                    if (mapInfo.UnitsAttributes[key][i].ContainsKey("player"))
+                    {
+                        int playerID = GameManager.GetPlayerIDByName(mapInfo.UnitsAttributes[key][i]["player"].ToString());
+                        tempUnit.Owner = GameManager.Players[playerID];
+                    }
+                    if (mapInfo.UnitsAttributes[key][i].ContainsKey("type"))
+                    {
+                        tempUnit.UnitType = mapInfo.UnitsAttributes[key][i]["type"].ToString();
+                    }
+                    if (mapInfo.UnitsAttributes[key][i].ContainsKey("position"))
+                    {
+                        tempUnit.UnitPosition = (Vector3)mapInfo.UnitsAttributes[key][i]["position"];
+                    }
+                    if (mapInfo.UnitsAttributes[key][i].ContainsKey("destination"))
+                    {
+                        tempUnit.Destination = (Vector3)mapInfo.UnitsAttributes[key][i]["destination"];
+                    }
+                    else
+                    {
+                        tempUnit.Destination = Vector3.negativeInfinity;
+                    }
+                    GameManager.CurrentWorld.Sectors[key].Units.Add(tempUnit.uID, tempUnit);
+                }  
             }
         }
 
@@ -119,9 +134,14 @@ public static class MessageSender
     private static void createPlayers(string[] names)
     {
         GameManager.Players.Clear();
+        GameManager.Players.Add(GameManager.CurrentPlayer);
         for (int i = 0; i < names.Length; i++)
         {
-            GameManager.Players.Add(new Player(names[i]));
+            if (names[i] != GameManager.CurrentPlayer.Name)
+            {
+                GameManager.Players.Add(new Player(names[i]));
+            }
+
         }
     }
     

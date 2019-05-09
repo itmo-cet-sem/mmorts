@@ -13,12 +13,28 @@ namespace GameLogic
         public static Dictionary<string, UnitType> UnitTypes;
         public static Dictionary<string, Component> Components;
         public static Dictionary<string, Frame> Frames;
+        public static List<int> Sectors;
+        public static int Space = 0;
+
         public static void onStart()
         {
             UnitTypes = new Dictionary<string, UnitType>();
             createComponents();
             createFrames();
         }
+
+        public static int GetPlayerIDByName(string name)
+        {
+            for (int i=0;i<Players.Count;i++)
+            {
+                if (Players[i].Name.Equals(name))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         private static void createComponents()
         {
             if (Components != null)

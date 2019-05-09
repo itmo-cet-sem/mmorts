@@ -5,4 +5,5 @@ using UnityEngine;
 public class UnitInfo : MonoBehaviour
 {
     public int ID;
+    public Vector2Int Coordinates;
 }

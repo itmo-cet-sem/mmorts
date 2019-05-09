@@ -35,7 +35,7 @@ public class InfoUpdater : MonoBehaviour
     }
     IEnumerator updateInfo()
     {
-        MessageSender.SendMapMessage();
+        MessageSender.SendMapMessage(GameLogic.GameManager.Space,GameLogic.GameManager.CurrentWorld.Sectors);
         yield return new WaitForSeconds(1f);
     }
 }

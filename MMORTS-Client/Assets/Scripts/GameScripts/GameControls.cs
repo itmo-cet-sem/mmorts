@@ -27,7 +27,10 @@ public class GameControls : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Q))
         {
-            MessageSender.SendSpawnMessage(GameLogic.GameManager.CurrentWorld.TempSelectedType.Name);
+            if (GameLogic.GameManager.CurrentWorld.TempSelectedType != null)
+            {
+                MessageSender.SendSpawnMessage(GameLogic.GameManager.CurrentWorld.TempSelectedType.Name);
+            }
         }
         if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))
         {
@@ -41,20 +44,21 @@ public class GameControls : MonoBehaviour
                     if (hit.collider.gameObject.tag.Equals("Unit"))
                     {
                         int uid = hit.collider.gameObject.GetComponent<UnitInfo>().ID;
+                        Vector2Int sectorPosition = hit.collider.gameObject.GetComponent<UnitInfo>().Coordinates;
 
                         UnitInfo.SetActive(true);
-                        UnitInfo.transform.GetChild(0).GetComponent<Text>().text = "Player: " + GameLogic.GameManager.CurrentWorld.Units[uid].Owner.Name;
-                        UnitInfo.transform.GetChild(1).GetComponent<Text>().text = "Unit Type: " +GameLogic.GameManager.CurrentWorld.Units[uid].UnitType.ToString();
+                        UnitInfo.transform.GetChild(0).GetComponent<Text>().text = "Player: " + GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].Owner.Name;
+                        UnitInfo.transform.GetChild(1).GetComponent<Text>().text = "Unit Type: " + GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].UnitType.ToString();
 
                         selection.GetComponent<SpriteRenderer>().enabled = true;
                         selectedUnit = hit.collider.gameObject;
                         selection.transform.position = selectedUnit.transform.position;
                         selection.transform.SetParent(selectedUnit.transform);
-                        if (GameLogic.GameManager.CurrentWorld.Units[uid].Owner.Name == GameLogic.GameManager.CurrentPlayer.Name)
+                        if (GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].Owner.Name == GameLogic.GameManager.CurrentPlayer.Name)
                         {
-                            if (!GameLogic.GameManager.CurrentWorld.Units[uid].Destination.Equals(Vector3.negativeInfinity))
+                            if (!GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].Destination.Equals(Vector3.negativeInfinity))
                             {
-                                destination.transform.position = GameLogic.GameManager.CurrentWorld.Units[uid].Destination;
+                                destination.transform.position = GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].Destination;
                                 destination.GetComponent<SpriteRenderer>().enabled = true;
                             }
                             else
@@ -68,6 +72,7 @@ public class GameControls : MonoBehaviour
                         UnitInfo.SetActive(false);
                         selection.GetComponent<SpriteRenderer>().enabled = false;
                         destination.GetComponent<SpriteRenderer>().enabled = false;
+                        selectedUnit = null;
                     }
                 }
                 if (Input.GetMouseButtonDown(1))
@@ -75,10 +80,18 @@ public class GameControls : MonoBehaviour
                     if (selectedUnit != null)
                     {
                         int uid = selectedUnit.GetComponent<UnitInfo>().ID;
-                        GameLogic.GameManager.CurrentWorld.Units[uid].Destination = hit.point;
-                        MessageSender.SendMoveMessage(selectedUnit.GetComponent<UnitInfo>().ID);
-                        destination.transform.position = GameLogic.GameManager.CurrentWorld.Units[uid].Destination;
-                        destination.GetComponent<SpriteRenderer>().enabled = true;
+                        Vector2Int sectorPosition = selectedUnit.GetComponent<UnitInfo>().Coordinates;
+
+                        if (GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].Owner.Name == GameLogic.GameManager.CurrentPlayer.Name)
+                        {
+                            if (hit.point != null)
+                            {
+                                GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].Destination = hit.point;
+                                MessageSender.SendMoveMessage(selectedUnit.GetComponent<UnitInfo>().ID, GameLogic.GameManager.Space, GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition]);
+                                destination.transform.position = GameLogic.GameManager.CurrentWorld.Sectors[sectorPosition].Units[uid].Destination;
+                                destination.GetComponent<SpriteRenderer>().enabled = true;
+                            }
+                        }
                     }
                 }
             }

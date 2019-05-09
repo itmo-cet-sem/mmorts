@@ -6,11 +6,11 @@ namespace GameLogic
 {
     public class World
     {
-        public Dictionary<int, Unit> Units;
         public UnitType TempSelectedType;
+        public Dictionary<Vector2Int,Sector> Sectors;
         public World()
         {
-            Units = new Dictionary<int, Unit>();
+            Sectors = new Dictionary<Vector2Int, Sector>();
         }
     }
 }
