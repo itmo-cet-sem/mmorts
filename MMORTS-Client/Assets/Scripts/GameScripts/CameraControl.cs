@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraControl : MonoBehaviour
 {
     public bool IsInMenu = false;
+    [SerializeField]
+    Text coords;
 
     float speed = 0.1f;
     const float speedUpMultiplayer = 5f;
@@ -15,6 +18,7 @@ public class CameraControl : MonoBehaviour
     private void Start()
     {
         currentSector = new Vector2Int((int)transform.position.x / 10, (int)transform.position.y / 10);
+        coords.text = "X: " + currentSector.x.ToString() + "\nY: " + currentSector.y.ToString();
         selectVisibleSectors();
     }
 
@@ -44,7 +48,7 @@ public class CameraControl : MonoBehaviour
                 Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 if (Input.GetAxis("Mouse ScrollWheel") < 0)
                 {
-                    if (Camera.main.orthographicSize < 100)
+                    if (Camera.main.orthographicSize < 20)
                     {
                         Camera.main.orthographicSize -= wheelSpeed * Input.GetAxis("Mouse ScrollWheel") * currentSpeedUpMultiplayer;
                     }
@@ -57,13 +61,15 @@ public class CameraControl : MonoBehaviour
                     }
                 }
                 transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime);
+                processSectors();
             }
         }
     }
 
     private void processSectors()
     {
-        Vector2Int newSector = new Vector2Int((int)transform.position.x/10, (int)transform.position.y/10);
+        Vector2Int newSector = new Vector2Int((int)transform.position.x/ Config.SectorSize, (int)transform.position.y/Config.SectorSize);
+        coords.text = "X: " + newSector.x.ToString() + "\nY: " + newSector.y.ToString();
         if (newSector != currentSector)
         {
             currentSector = newSector;

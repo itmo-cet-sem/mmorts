@@ -102,22 +102,22 @@ public class MapCommand : Command
 
                 if (unitsProperties.ContainsKey("position"))
                 {
-                    List<float> coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["position"].ToString());
-                    if (coorditates == null)
+                    List<float> coordinates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["position"].ToString());
+                    if (coordinates == null)
                     {
                         return false;
                     }
 
-                    UnitsAttributes[sectorPosition][j].Add("position", new Vector3(coorditates[1]* Config.SectorSize + coorditates[3], coorditates[2] * Config.SectorSize + coorditates[4], coorditates[2]));
+                    UnitsAttributes[sectorPosition][j].Add("position", from5to2(coordinates));
                 }
                 if (unitsProperties.ContainsKey("destination"))
                 {
-                    List<float> coorditates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["destination"].ToString());
-                    if (coorditates == null)
+                    List<float> coordinates = JsonConvert.DeserializeObject<List<float>>(unitsProperties["destination"].ToString());
+                    if (coordinates == null)
                     {
                         return false;
                     }
-                    UnitsAttributes[sectorPosition][j].Add("destination", new Vector3(coorditates[1] * Config.SectorSize + coorditates[3], coorditates[2] * Config.SectorSize + coorditates[4], coorditates[2]));
+                    UnitsAttributes[sectorPosition][j].Add("destination", from5to2(coordinates));
                 }
             }
         }
@@ -126,5 +126,9 @@ public class MapCommand : Command
             _playerNames.Add(GameLogic.GameManager.CurrentPlayer.Name);
         }
         return true;
+    }
+    private Vector3 from5to2(List<float> coordinates)
+    {
+        return new Vector3(coordinates[1] * Config.SectorSize + coordinates[3], coordinates[2] * Config.SectorSize + coordinates[4], 0);
     }
 }

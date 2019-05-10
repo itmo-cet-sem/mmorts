@@ -43,8 +43,8 @@ public static class MessageBuilder
         coords.Add(space);
         coords.Add(sector.x);
         coords.Add(sector.y);
-        coords.Add(destonation.x / Config.SectorSize);
-        coords.Add(destonation.y / Config.SectorSize);
+        coords.Add(destonation.x);
+        coords.Add(destonation.y);
         command.Add("destination", coords);
         return JsonConvert.SerializeObject(command);
     }

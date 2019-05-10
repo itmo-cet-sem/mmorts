@@ -35,8 +35,9 @@ public static class MessageSender
 
     public static void SendMoveMessage(int uid, int space, Sector sector)
     {
-        Vector2Int coordinates = new Vector2Int((int)sector.Units[uid].Destination.x / Config.SectorSize, (int)sector.Units[uid].Destination.z / Config.SectorSize);
-        Vector3 destination = new Vector3(sector.Units[uid].Destination.x - coordinates.x * 10, sector.Units[uid].Destination.y - coordinates.y * 10);
+        Vector3 initialCoordinate = sector.Units[uid].Destination;
+        Vector2Int coordinates = new Vector2Int((int)initialCoordinate.x / Config.SectorSize, (int)initialCoordinate.y / Config.SectorSize);
+        Vector3 destination = new Vector3(initialCoordinate.x - coordinates.x * 10, initialCoordinate.y - coordinates.y * 10);
         Connector.SendMessage(MessageBuilder.MoveMessage(uid, space, coordinates, destination));
     }
 
