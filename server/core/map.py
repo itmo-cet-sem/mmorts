@@ -3,6 +3,10 @@ from math import sqrt
 from .config import SECTOR_SIZE
 
 
+def to_tuple(lst, to_type=None):
+    return tuple(to_type(x) for x in lst)
+
+
 class Vector:
     def __init__(self, x, y):
         self.x, self.y = x, y
@@ -14,7 +18,8 @@ class Vector:
         return f'Vector({self.x}, {self.y})'
 
     def __eq__(self, other):
-        return self.x == other[0] and self.y == other[1]
+        EPS = 1e-8
+        return abs(self.x - other[0]) <= EPS and abs(self.y - other[1]) <= EPS
 
     def __add__(self, other):
         return Vector(self.x + other[0], self.y + other[1])
@@ -49,15 +54,15 @@ class Vector:
 class Position:
     def __init__(self, space, sector, pos):
         self.space = space
-        self.sector = Vector(*sector)
-        self.pos = Vector(*pos)
+        self.sector = Vector(*to_tuple(sector, to_type=int))
+        self.pos = Vector(*to_tuple(pos, to_type=float))
 
     def to_list(self):
         return [self.space, *self.sector, *self.pos]
 
     @staticmethod
     def from_list(lst):
-        return Position(lst[0], lst[1:3], lst[3:])
+        return Position(lst[0], lst[1:3], lst[3:5])
 
     def __add__(self, other):
         new_sector = Vector(*self.sector)
@@ -103,13 +108,13 @@ class Space:
             self[unit.position.sector][unit.uid] = unit
 
     def __getitem__(self, key):
-        key = tuple(key)
+        key = to_tuple(key, to_type=int)
         if key not in self.sectors:
             self.sectors[key] = {}
         return self.sectors[key]
 
     def __setitem__(self, key, value):
-        key = tuple(key)
+        key = to_tuple(key, to_type=int)
         if key not in self.sectors:
             self.sectors[key] = {}
         self.sectors[key] = value
