@@ -4,7 +4,7 @@ from .config import SECTOR_SIZE
 
 
 def to_tuple(lst, to_type=None):
-    return tuple(to_type(x) for x in lst)
+    return tuple(lst) if to_type is None else tuple(to_type(x) for x in lst)
 
 
 class Vector:
