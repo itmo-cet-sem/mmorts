@@ -45,23 +45,28 @@ public class CameraControl : MonoBehaviour
             }
             if (Input.GetAxis("Mouse ScrollWheel") != 0)
             {
+                bool isMove = false;
                 Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 if (Input.GetAxis("Mouse ScrollWheel") < 0)
                 {
                     if (Camera.main.orthographicSize < 20)
                     {
-                        Camera.main.orthographicSize -= wheelSpeed * Input.GetAxis("Mouse ScrollWheel") * currentSpeedUpMultiplayer;
+                        isMove = true;                        
                     }
                 }
                 else
                 {
                     if (Camera.main.orthographicSize > 1)
                     {
-                        Camera.main.orthographicSize -= wheelSpeed * Input.GetAxis("Mouse ScrollWheel") * currentSpeedUpMultiplayer;
+                        isMove = true;
                     }
                 }
-                transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime);
-                processSectors();
+                if (isMove)
+                {
+                    Camera.main.orthographicSize -= wheelSpeed * Input.GetAxis("Mouse ScrollWheel") * currentSpeedUpMultiplayer;
+                    transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime);
+                    processSectors();
+                }
             }
         }
     }
