@@ -67,7 +67,7 @@ def main():
         'get_unit_types': [],
         'spawn_unit': ['unit_type'],
         'move_unit': ['uid', 'destination'],
-        'map': [],
+        'map': ['space', 'sectors'],
     }
 
     while True:
@@ -84,6 +84,9 @@ def main():
 
                 if cmd == 'register_unit_type':
                     kwargs['params'] = json.loads(kwargs.get('params', '{ }'))
+
+                if cmd == 'map':
+                    kwargs['sectors'] = json.loads(kwargs['sectors'])
 
             else:
                 print(args)

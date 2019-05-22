@@ -12,10 +12,19 @@ public static class MessageBuilder
         command.Add("player_name", login);
         return JsonConvert.SerializeObject(command);
     }
-    public static string MapMessage()
+    public static string MapMessage(int space, List<Vector2Int> sectors)
     {
-        Dictionary<string, string> command = new Dictionary<string, string>();
+        Dictionary<string, object> command = new Dictionary<string, object>();
         command.Add("c", "map");
+        command.Add("space", space);
+        List<int[]> sectorsXY = new List<int[]>();
+        for (int i = 0; i<sectors.Count;i++)
+        {
+            sectorsXY.Add(new int[2]);
+            sectorsXY[i][0] = sectors[i].x;
+            sectorsXY[i][1] = sectors[i].y;
+        }
+        command.Add("sectors", sectorsXY);
         return JsonConvert.SerializeObject(command);
     }
     public static string SpawnMessage(string unitType)
@@ -25,13 +34,15 @@ public static class MessageBuilder
         command.Add("unit_type", unitType);
         return JsonConvert.SerializeObject(command);
     }
-    public static string MoveMessage(int uid, Vector3 destonation)
+    public static string MoveMessage(int uid, int space, Vector2Int sector, Vector3 destonation)
     {
         Dictionary<string, object> command = new Dictionary<string, object>();
         command.Add("c", "move_unit");
         command.Add("uid", uid);
         List<float> coords = new List<float>();
-        coords.Add(0);
+        coords.Add(space);
+        coords.Add(sector.x);
+        coords.Add(sector.y);
         coords.Add(destonation.x);
         coords.Add(destonation.y);
         command.Add("destination", coords);

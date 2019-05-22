@@ -10,8 +10,8 @@ using UnityEngine;
 
 public static class Connector
 {
-    private static int port = 31337;
-    private static string serverAddress = "127.0.0.1";
+    private static int port;
+    private static string serverAddress;
     private static Socket socket;
     private static byte[] _recieveBuffer = new byte[8142];
 
@@ -28,6 +28,8 @@ public static class Connector
 
     public static void ConnectToServer()
     {
+        serverAddress = Config.ServerAdress;
+        port = Config.Port;
         if (IsConnected)
         {
             CloseConnection();

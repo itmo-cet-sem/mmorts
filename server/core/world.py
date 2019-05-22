@@ -2,45 +2,21 @@
 Module describing game world.
 """
 
-from math import sqrt
 from random import uniform
 from sys import stderr
 from threading import Event, Thread
 from time import sleep
 from traceback import print_exc
 
-from .config import MINIMUM_TICK_DELAY
+from .config import MINIMUM_TICK_DELAY, SECTOR_SIZE
+from .map import Position, Space
 from .unit import Unit
-
-
-class Position:
-    def __init__(self, space, x, y):
-        self.space, self.x, self.y = space, x, y
-
-    def to_list(self):
-        return [self.space, self.x, self.y]
-
-    def __add__(self, other):
-        if isinstance(other, Position):
-            return Position(self.space, self.x + other.x, self.y + other.y)
-        return Position(self.space, self.x + other[0], self.y + other[1])
-
-    def __sub__(self, other):
-        if isinstance(other, Position):
-            return Position(self.space, self.x - other.x, self.y - other.y)
-        return Position(self.space, self.x - other[0], self.y - other[1])
-
-    def __abs__(self):
-        return sqrt(self.x ** 2 + self.y ** 2)
-
-    def norm(self):
-        mod = max(1, abs(self))
-        return Position(self.space, self.x / mod, self.y / mod)
 
 
 class World:
     def __init__(self):
         self.current_uid = 0
+        self.map = [Space(space_id) for space_id in range(1)]
         self.units = {}
         self.threads = []
         self.event = Event()
@@ -49,15 +25,17 @@ class World:
     def spawn_unit(self, player, unit_type):
         # not thread-safe: may break self.next_tick
         # TODO: make spawning units in self.next_tick
-        unit = Unit(
-            self.current_uid, player, unit_type,
-            Position(0, uniform(-100, 100), uniform(-100, 100)))
+        sector = (0, 0)
+        pos = Position(
+            0, sector, [uniform(0, SECTOR_SIZE), uniform(0, SECTOR_SIZE)])
+        unit = Unit(self.current_uid, player, unit_type, pos)
         self.current_uid += 1
         self.units[unit.uid] = unit
         player.units[unit.uid] = unit
+        self.map[0][sector][unit.uid] = unit
 
     def move_unit(self, player, uid, destination):
-        self.units[uid].destination = Position(*destination)
+        self.units[uid].destination = Position.from_list(destination)
 
     def start(self):
         self.threads.append(Thread(
@@ -94,10 +72,5 @@ class World:
             print_exc(file=stderr)
 
     def next_tick(self):
-        for unit in self.units.values():
-            if unit.destination is None:
-                continue
-            direction = (unit.destination - unit.position).norm()
-            unit.position += direction
-            if abs(direction) < 1e-4:
-                unit.destination = None
+        for space in self.map:
+            space.handle_movements()

@@ -11,5 +11,6 @@ namespace GameLogic
         public Vector3 UnitPosition { get; set; }
         public string UnitType { get; set; }
         public Vector3 Destination { get; set; }
+        public Vector2Int SectorID { get; set; }
     }
 }

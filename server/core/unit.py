@@ -18,13 +18,14 @@ class Unit:
         self.position = position
         self.destination = None
 
-    def to_dict(self, private=False):
+    def to_dict(self, private=None):
         result = {
             'uid': str(self.uid),
+            'player': self.player.name,
             'type': self.type.name,
             'position': self.position.to_list(),
         }
-        if private:
+        if private == self.player:
             if self.destination:
                 result.update({
                     'destination': self.destination.to_list()
